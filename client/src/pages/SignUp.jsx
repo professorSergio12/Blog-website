@@ -27,6 +27,7 @@ export default function SignUp() {
       });
       const data = await res.json();
       if (data.success === false) {
+        setLoading(false);
         return setErrorMessage(data.message);
       }
       setLoading(false);
@@ -35,8 +36,8 @@ export default function SignUp() {
         navigate("/sign-in");
       }
     } catch (error) {
-      setErrorMessage(error.message);
       setLoading(false);
+      setErrorMessage(error.message);
     }
   };
   return (
@@ -109,7 +110,7 @@ export default function SignUp() {
           <div className="flex gap-2 text-sm mt-5">
             <span>Have an account?</span>
             <Link to="/sign-in" className="text-blue-500">
-              Sign in
+              Sign In
             </Link>
           </div>
 
