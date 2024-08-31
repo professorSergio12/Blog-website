@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const userSchmema = new mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     username: {
       type: String,
@@ -19,11 +19,16 @@ const userSchmema = new mongoose.Schema(
     profilePicture: {
       type: String,
       default:
-        "https://imgs.search.brave.com/o8bDpgPcy9NJ_jxkUoCg6lFSNynwecFGT-7lQUAY3WY/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzAxLzc0LzAzLzI0/LzM2MF9GXzE3NDAz/MjQ0M19GbGx5Rm9m/RlpqN0pPUFhHSmw3/NVVpRUVlSXE4QUll/Ry5qcGc",
+        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+    },
+    isAdmin: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }
 );
 
-const User = mongoose.model("User", userSchmema);
+const User = mongoose.model("User", userSchema);
+
 export default User;
