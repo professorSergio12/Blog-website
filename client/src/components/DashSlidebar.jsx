@@ -85,6 +85,15 @@ export default function DashSlidebar() {
                   Users
                 </Sidebar.Item>
               </Link>
+              <Link to="/dashboard?tab=comments">
+                <Sidebar.Item
+                  active={tab === "comments"}
+                  icon={HiAnnotation}
+                  as="div"
+                >
+                  Comments
+                </Sidebar.Item>
+              </Link>
             </>
           )}
 
