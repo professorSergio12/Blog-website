@@ -53,8 +53,10 @@ FIREBASE_API_KEY=your_firebase_api_key
 4. Run the project:
 ```
 npm run dev
+cd client
+npm run dev
 ```
-
+To run the frontend as well as backend
 ### Admin Dashboard
 To access the admin dashboard, log in as an admin (you can set this in your database manually) and navigate to /admin. From there, you can:
 
