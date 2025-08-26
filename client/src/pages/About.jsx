@@ -8,10 +8,9 @@ export default function About() {
           </h1>
           <div className="text-md text-gray-500 flex flex-col gap-6">
             <p>
-              Welcome to Raconteur's Blog! This blog was created by our team, led by Rohit Rawat followed by Shreyansh Kumar and Abhishek Yadav as a
-              practice project to share his thoughts and ideas with the world.
-              Our team is a passionate developer who loves to write about
-              technology, coding, and everything in between.
+             Welcome to Raconteur's Blog!
+            This blog is the personal project of Rohit Rawat, a developer passionate about technology and problem-solving.
+            Here, he writes about software development, coding practices, and the ideas that inspire him along the way.
             </p>
 
             <p>
