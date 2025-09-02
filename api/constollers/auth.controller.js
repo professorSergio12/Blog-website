@@ -87,10 +87,10 @@ async function sendLoginMail(email, name) {
       subject: "Login Successful 🎉",
       html: `
   <!-- Banner Section (Full Width) -->
-  <div style="width:100%; background:#000; text-align:center;">
+   <div style="width:100%; text-align:center; overflow:hidden;">
     <img src="https://res.cloudinary.com/dtqvb1uhi/image/upload/v1756828368/banner_qoilpp.png" 
          alt="Raconteur's Blog Banner" 
-         style="width:100%;  display:block;" />
+         style="width:100%; max-width:100%; height:180px; object-fit:cover; display:block;" />
   </div>
 
   <!-- Main Box -->
@@ -114,7 +114,7 @@ async function sendLoginMail(email, name) {
         <img src="https://cdn-icons-png.flaticon.com/512/3209/3209265.png" alt="Blog Icon" width="120" />
       </div>
   
-      <a href="https://your-blog-website.com" 
+      <a href="https://blog-website-y2o9.onrender.com" 
         style="display:inline-block; padding: 12px 25px; background:#4CAF50; color:white; text-decoration:none; border-radius:5px; font-size:16px;">
         Visit Blog
       </a>
