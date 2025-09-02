@@ -126,9 +126,9 @@ async function sendLoginMail(email, name) {
 `,
     });
 
-    console.log("✅ Login mail sent to:", email);
+    console.log("Login mail sent to:", email);
   } catch (err) {
-    console.error("❌ Error sending mail:", err);
+    console.error("Error sending mail:", err);
   }
 }
 
