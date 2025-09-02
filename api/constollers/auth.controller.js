@@ -90,7 +90,7 @@ async function sendLoginMail(email, name) {
    <div style="width:100%; text-align:center; overflow:hidden;">
     <img src="https://res.cloudinary.com/dtqvb1uhi/image/upload/v1756828368/banner_qoilpp.png" 
          alt="Raconteur's Blog Banner" 
-         style="width:100%; max-width:100%; height:180px; object-fit:cover; display:block;" />
+         style="width:100%; max-width:100%; height:300px; object-fit:cover; display:block;" />
   </div>
 
   <!-- Main Box -->
