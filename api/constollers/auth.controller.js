@@ -1,8 +1,72 @@
 import User from "../models/user.model.js";
+import Otp from "../models/forgetpassword.model.js";
 import bcryptjs from "bcryptjs";
 import { errorHandler } from "../utils/error.js";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
+import crypto from "crypto";
+
+async function sendLoginMail(email, name) {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS,
+      },
+    });
+
+    await transporter.sendMail({
+      from: `"Raconteur's Blog!" <${process.env.MAIL_USER}>`,
+      to: email,
+      subject: "Login Successful 🎉",
+      html: `
+  <!-- Banner Section (Full Width) -->
+  <div style="width:100%; background:#000; text-align:center;">
+    <img src="https://res.cloudinary.com/dtqvb1uhi/image/upload/v1756828368/banner_qoilpp.png" 
+         alt="Raconteur's Blog Banner" 
+         style="width:100%;  display:block;" />
+  </div>
+
+  <!-- Main Box -->
+  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border-radius: 10px; background: #f4f4f4;">
+    
+    <!-- Header Section -->
+    <div style="text-align: center; padding: 20px; background: #4CAF50; color: white; border-radius: 10px 10px 0 0;">
+      <h1>Welcome Back, ${name}!</h1>
+    </div>
+    
+    <!-- Body Section -->
+    <div style="background: white; padding: 20px; border-radius: 0 0 10px 10px;">
+      <p style="font-size: 16px; color: #333;">
+        You have <b>successfully logged in</b> to <span style="color:#4CAF50;">Raconteur's Blog</span>. 🎉
+      </p>
+      <p style="font-size: 14px; color: #555;">
+        Start exploring new stories, share your thoughts, and enjoy reading amazing blogs.
+      </p>
+      
+      <div style="text-align: center; margin: 20px 0;">
+        <img src="https://cdn-icons-png.flaticon.com/512/3209/3209265.png" alt="Blog Icon" width="120" />
+      </div>
+  
+      <a href="https://your-blog-website.com" 
+        style="display:inline-block; padding: 12px 25px; background:#4CAF50; color:white; text-decoration:none; border-radius:5px; font-size:16px;">
+        Visit Blog
+      </a>
+  
+      <p style="margin-top: 20px; font-size: 12px; color: #999;">
+        If you didn’t log in, please ignore this email.
+      </p>
+    </div>
+  </div>
+`,
+    });
+
+    console.log("✅ Login mail sent to:", email);
+  } catch (err) {
+    console.error("❌ Error sending mail:", err);
+  }
+}
 
 export const signup = async (req, res, next) => {
   const { username, email, password } = req.body;
@@ -28,6 +92,7 @@ export const signup = async (req, res, next) => {
   try {
     await newUser.save();
     res.json({ success: true, message: "Signup successful" });
+    await sendLoginMail(email, username);
   } catch (error) {
     next(error);
   }
@@ -59,7 +124,8 @@ export const signin = async (req, res, next) => {
       process.env.JWT_SECRET
     );
 
-    const { password: pass, ...rest } = validUser._doc; 
+    const { password: pass, ...rest } = validUser._doc; // exlude the passwrod from validUser data
+
     res
       .status(200)
       .cookie("access_token", token, {
@@ -70,68 +136,6 @@ export const signin = async (req, res, next) => {
     next(error);
   }
 };
-
-async function sendLoginMail(email, name) {
-  try {
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS,
-      },
-    });
-
-    await transporter.sendMail({
-      from: `"Raconteur's Blog!" <${process.env.MAIL_USER}>`,
-      to: email,
-      subject: "Login Successful 🎉",
-      html: `
-  <!-- Banner Section (Full Width) -->
-   <div style="width:100%; text-align:center; overflow:hidden;">
-    <img src="https://res.cloudinary.com/dtqvb1uhi/image/upload/v1756828368/banner_qoilpp.png" 
-         alt="Raconteur's Blog Banner" 
-         style="width:100%; max-width:100%; height:300px; object-fit:cover; display:block;" />
-  </div>
-
-  <!-- Main Box -->
-  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border-radius: 10px; background: #f4f4f4;">
-    
-    <!-- Header Section -->
-    <div style="text-align: center; padding: 20px; background: #4CAF50; color: white; border-radius: 10px 10px 0 0;">
-      <h1>Welcome Back, ${name}!</h1>
-    </div>
-    
-    <!-- Body Section -->
-    <div style="background: white; padding: 20px; border-radius: 0 0 10px 10px;">
-      <p style="font-size: 16px; color: #333;">
-        You have <b>successfully logged in</b> to <span style="color:#4CAF50;">Raconteur's Blog</span>. 🎉
-      </p>
-      <p style="font-size: 14px; color: #555;">
-        Start exploring new stories, share your thoughts, and enjoy reading amazing blogs.
-      </p>
-      
-      <div style="text-align: center; margin: 20px 0;">
-        <img src="https://cdn-icons-png.flaticon.com/512/3209/3209265.png" alt="Blog Icon" width="120" />
-      </div>
-  
-      <a href="https://blog-website-y2o9.onrender.com" 
-        style="display:inline-block; padding: 12px 25px; background:#4CAF50; color:white; text-decoration:none; border-radius:5px; font-size:16px;">
-        Visit Blog
-      </a>
-  
-      <p style="margin-top: 20px; font-size: 12px; color: #999;">
-        If you didn’t log in, please ignore this email.
-      </p>
-    </div>
-  </div>
-`,
-    });
-
-    console.log("Login mail sent to:", email);
-  } catch (err) {
-    console.error("Error sending mail:", err);
-  }
-}
 
 export const google = async (req, res, next) => {
   const { email, name, googlePhotoUrl } = req.body;
@@ -187,3 +191,83 @@ export const google = async (req, res, next) => {
   }
 };
 
+export const forgetPassword = async (req, res, next) => {
+  const { email } = req.body;
+
+  try {
+    const validUser = await User.findOne({ email });
+    if (!validUser) return next(errorHandler(400, "User not found"));
+
+    // generate 6-digit OTP
+    const otp = crypto.randomInt(100000, 999999).toString();
+
+    const newOtp = new Otp({
+      email,
+      otp,
+      expiresAt: new Date(Date.now() + 15 * 60 * 1000),
+    });
+
+    await newOtp.save();
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS,
+      },
+    });
+
+    await transporter.sendMail({
+      from: `"Raconteur's Blog!" <${process.env.MAIL_USER}>`,
+      to: email,
+      subject: "Password Reset OTP",
+      html: `<p>Your OTP for password reset is: <b>${otp}</b></p>`,
+    });
+
+    res.json({ message: "OTP sent successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const verifyOtp = async (req, res, next) => {
+  const { email, otp } = req.body;
+
+  try {
+    const validDoc = await Otp.findOne({ email, otp });
+    if (!validDoc) return next(errorHandler(400, "Invalid OTP"));
+
+    if (validDoc.expiresAt < Date.now()) {
+      return next(errorHandler(400, "OTP is expired"));
+    }
+
+    res.json({ success: true, message: "OTP verified successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const resetPassword = async (req, res, next) => {
+  const { email, password } = req.body;
+
+  if (!email) return next(errorHandler("Email is missing"));
+  if (!password) return next(errorHandler("Password us undefined"));
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return next(errorHandler(400, "User not found"));
+    const hashedPassword = bcryptjs.hashSync(password, 10);
+
+    user.password = hashedPassword;
+    await user.save();
+
+    // delete all OTPs for this user
+    await Otp.deleteMany({ email });
+
+    res
+      .status(200)
+      .json({ success: true, message: "Password reset successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
